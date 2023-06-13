@@ -3,15 +3,18 @@ description: 'Instantiates a chroma database server.'
 branding:
   icon: 'database'
   color: 'yellow'
-  
+
 runs:
   using: 'composite'
   steps:
-    - name: Checkout ChromaDB repository
-      uses: actions/checkout@v2
-      with:
-        repository: 'CakeCrusher/chroma'
-        path: './chroma' # Clones the repo to a 'chroma' subdirectory
+    - name: Setup sparse-checkout
+      run: |
+        git clone --no-checkout https://github.com/CakeCrusher/chroma
+        cd chroma
+        git sparse-checkout init --cone
+        git sparse-checkout set '*' '!clients'
+        git checkout main
+      shell: bash
 
     - name: Setup C++ compiler
       run: |
